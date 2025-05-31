@@ -30,6 +30,9 @@ const SignUpPage = () => {
       // if fetching user fails, redirect to login
       navigate('/login');
     }
+  },
+  onSettled: () => {
+    setSignupData({ fullName: '', email: '', password: '' }); // Clear form fields on success/failure
   }
 });
 
