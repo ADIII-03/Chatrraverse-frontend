@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide Stream notifications (optional) */
+.str-chat__list-notifications {
+  display: none;
+}
+
+/* Message input border uses DaisyUI neutral color */
+.str-chat__message-input {
+  border-top: 1px solid var(--neutral);
+}
+
+/* Full height flex layout for main channel container */
+.str-chat__channel {
+  @apply flex flex-col h-full bg-base-100 text-base-content;
+}
+
+/* Chat container also full height flex column */
+.str-chat__container {
+  @apply flex flex-col h-full rounded-lg shadow-lg overflow-hidden;
+  background-color: var(--base-100);
+}
+
+/* Message list takes all available space with vertical scroll */
+.str-chat__message-list {
+  @apply flex-1 overflow-y-auto px-4 py-2;
+  background-color: var(--base-100);
+}
+
+/* Messages bubble custom colors using DaisyUI primary and accent */
+.str-chat__message-simple--mine {
+  background-color: var(--primary);
+  color: white;
+}
+
+.str-chat__message-simple {
+  background-color: var(--accent);
+  color: black;
+}
+
+/* Channel header with neutral background and base-content text */
+.str-chat__header {
+  background-color: var(--neutral);
+  color: var(--base-100);
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--primary);
+}
+
+/* Input container background */
+.str-chat__message-input {
+  background-color: var(--base-100);
+}
+
+/* Customize scrollbar for message list (optional) */
+.str-chat__message-list::-webkit-scrollbar {
+  width: 8px;
+}
+.str-chat__message-list::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  border-radius: 4px;
+}
