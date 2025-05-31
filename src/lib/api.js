@@ -1,25 +1,25 @@
 import { axiosInstance } from "./axios.js";
 
 export const getAuthUser = async () => {
-  const res = await axiosInstance.get("/auth/me");
+  const res = await axiosInstance.get("auth/me");
   console.log("getAuthUser response", res);
   return { user: res.data.user };
 
 };
 
 export const login = async (userData) => {
-  const response = await axiosInstance.post("/auth/login", userData);
+  const response = await axiosInstance.post("auth/login", userData);
   // console.log("login response", response);
   return response.data ;
 };
 
 
 export const completeOnboarding = async (userData) => {
-  const response = await axiosInstance.post("/auth/onboarding", userData);
+  const response = await axiosInstance.post("auth/onboarding", userData);
   return response.data;
 };
 export const logout = async () => {
-  const response = await axiosInstance.post("/auth/logout");
+  const response = await axiosInstance.post("auth/logout");
   return response.data;
 };
 
