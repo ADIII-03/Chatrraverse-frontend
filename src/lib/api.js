@@ -2,12 +2,15 @@ import { axiosInstance } from "./axios.js";
 
 export const getAuthUser = async () => {
   const res = await axiosInstance.get("/auth/me");
-  return res.data;
+  console.log("getAuthUser response", res);
+  return { user: res.data.user };
+
 };
 
 export const login = async (userData) => {
   const response = await axiosInstance.post("/auth/login", userData);
-  return response.data;
+  // console.log("login response", response);
+  return response.data ;
 };
 
 

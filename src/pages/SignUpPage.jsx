@@ -31,9 +31,7 @@ const SignUpPage = () => {
       navigate('/login');
     }
   },
-  onSettled: () => {
-    setSignupData({ fullName: '', email: '', password: '' }); // Clear form fields on success/failure
-  }
+ 
 });
 
 

@@ -10,6 +10,7 @@ const useAuthUser = () => {
     retry : false,
     
    });
+   console.log("Auth User:", authUser); 
 
    const { logout } = useLogout();
 

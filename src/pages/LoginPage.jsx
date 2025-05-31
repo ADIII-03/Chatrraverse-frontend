@@ -12,11 +12,7 @@ const LoginPage = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    loginMutation(loginData, {
-      onSuccess: () => {
-        setLoginData({ email: "", password: "" }); // Clear form fields on success
-      },
-    });
+    loginMutation(loginData);
   };
 
   return (
