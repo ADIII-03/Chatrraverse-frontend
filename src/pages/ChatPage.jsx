@@ -63,62 +63,53 @@ const ChatPage = () => {
 
   }, []);
 
-  useEffect(() => {
-    const initChat = async () => {
-      if (!tokenData?.token || !authUser) return;
+ useEffect(() => {
+  const initChat = async () => {
+    if (!tokenData?.token || !authUser) return;
 
-      // Use the singleton client instance
-      const client = chatClientInstance;
+    try {
+      const client = await streamClient.connectUser(
+        {
+          id: authUser._id,
+          name: authUser.fullName,
+          image: authUser.profilePic,
+        },
+        tokenData.token
+      );
 
-      // Only connect if not already connected
-      if (!client.userID) {
-        try {
-          await client.connectUser(
-            {
-              id: authUser._id,
-              name: authUser.fullName,
-              image: authUser.profilePic,
-            },
-            tokenData.token
-          );
-        } catch (error) {
-          console.error("Error connecting user:", error);
-          toast.error("Could not connect to chat. Please try again.");
-          setLoading(false);
-          return;
-        }
-      }
-
-      // Set up message notification listener
+      client.off('message.new', handleNewMessage); // prevent duplicate listeners
       client.on('message.new', handleNewMessage);
 
-      // Set up channel if targetUserId exists
       if (targetUserId) {
         const channelId = [authUser._id, targetUserId].sort().join("-");
-        const currChannel = client.channel("messaging", channelId, {
+        let currChannel = client.channel("messaging", channelId, {
           members: [authUser._id, targetUserId],
         });
 
-        await currChannel.watch();
+        // Only call watch if needed
+        if (!currChannel.initialized) {
+          await currChannel.watch();
+        }
+
         setChannel(currChannel);
       }
 
       setChatClient(client);
+    } catch (error) {
+      console.error("Chat init error:", error);
+      toast.error("Chat initialization failed.");
+    } finally {
       setLoading(false);
-    };
+    }
+  };
 
-    initChat();
+  initChat();
 
-    // Cleanup function
-    return () => {
-      if (chatClient && chatClient.disconnectUser) {
-       return () => {
-  chatClient?.off('message.new', handleNewMessage);
-};
+  return () => {
+    chatClient?.off('message.new', handleNewMessage); // ✅ correct cleanup
+  };
+}, [tokenData, authUser, targetUserId, handleNewMessage]);
 
-      }
-    };
-  }, [tokenData, authUser, targetUserId, handleNewMessage, chatClient]);
 
   const handleVideoCall = () => {
     if (channel) {
