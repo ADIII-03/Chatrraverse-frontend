@@ -54,7 +54,7 @@ const ChatPage = () => {
         icon: event.user.image
       });
     }
-  }, [authUser, notificationSound]);
+  }, [authUser]);
 
   useEffect(() => {
    if ('Notification' in window && Notification.permission !== 'granted') {
