@@ -6,10 +6,11 @@ import {
   HomeIcon,
   UsersIcon,
   SearchIcon,
+  Menu as MenuIcon,
 } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 
-const Navbar = ({ showSidebar }) => {
+const Navbar = ({ showSidebar  }) => {
   const { authUser, logout } = useAuthUser();
   const location = useLocation();
 
@@ -18,45 +19,38 @@ const Navbar = ({ showSidebar }) => {
   return (
     <nav className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 flex items-center px-4 sm:px-6 lg:px-8">
       <div className="flex items-center w-full">
-        {/* Logo - better handling for mobile and larger screens */}
+        {/* Logo */}
         <Link
           to="/"
-          className="flex items-center gap-2 max-w-[140px] sm:max-w-none"
+          className={flex items-center gap-2.5 ${isChatPage ? "" : "lg:hidden"}}
         >
-          <img
-            src="/logo.png"
-            alt="Logo"
-            className="h-8 w-auto object-contain max-h-8"
-          />
+          <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
         </Link>
+
+        {/* Hamburger button - shown on mobile when sidebar exists */}
+     
 
         {/* Spacer */}
         <div className="flex-1"></div>
 
-        {/* Search */}
         <Link to="/search" className="btn btn-ghost btn-circle ml-3 inline-flex">
           <SearchIcon className="h-6 w-6 text-base-content opacity-70" />
         </Link>
 
-        {/* Show "Home" button only on Chat Page */}
         {isChatPage && (
-          <Link
-            to="/"
-            className="flex items-center gap-1 btn btn-ghost btn-sm mr-4"
-          >
+          <Link to="/" className="flex items-center gap-1 btn btn-ghost btn-sm mr-4">
             <HomeIcon className="h-5 w-5" />
             Home
           </Link>
         )}
 
-        {/* Friends button only outside chat */}
         {!isChatPage && (
           <div className="flex gap-4 lg:hidden">
             <Link
               to="/friends"
-              className={`flex items-center gap-1 btn btn-ghost btn-sm ${
+              className={flex items-center gap-1 btn btn-ghost btn-sm ${
                 location.pathname === "/friends" ? "btn-active" : ""
-              }`}
+              }}
             >
               <UsersIcon className="h-5 w-5" />
               Friends
@@ -64,7 +58,6 @@ const Navbar = ({ showSidebar }) => {
           </div>
         )}
 
-        {/* Notifications (desktop only) */}
         <Link
           to="/notifications"
           className="btn btn-ghost btn-circle ml-3 hidden lg:inline-flex"
@@ -72,22 +65,15 @@ const Navbar = ({ showSidebar }) => {
           <BellIcon className="h-6 w-6 text-base-content opacity-70" />
         </Link>
 
-        {/* Theme toggle */}
         <ThemeSelector />
 
-        {/* Avatar */}
         <div className="avatar ml-3">
           <div className="w-9 rounded-full">
             <img src={authUser?.profilePic} alt="User Avatar" rel="noreferrer" />
           </div>
         </div>
 
-        {/* Logout */}
-        <button
-          className="btn btn-ghost btn-circle ml-3"
-          onClick={logout}
-          aria-label="Logout"
-        >
+        <button className="btn btn-ghost btn-circle ml-3" onClick={logout} aria-label="Logout">
           <LogOutIcon className="h-6 w-6 text-base-content opacity-70" />
         </button>
       </div>
