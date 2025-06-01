@@ -33,7 +33,7 @@ const ChatPage = () => {
   const [chatClient, setChatClient] = useState(null);
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [notificationSound] = useState(new Audio('/notification.mp3'));
+  
 
   const { authUser } = useAuthUser();
 
@@ -45,10 +45,7 @@ const ChatPage = () => {
 
   const handleNewMessage = useCallback((event) => {
     // Only handle notifications for messages not from the current user
-    if (event.user.id === authUser?._id) return;
-
-    // Play notification sound
-    notificationSound.play().catch(err => console.error('Error playing notification:', err));
+    if (event.user.id === authUser?._id) return;   
 
     // Show desktop notification
     if ('Notification' in window && Notification.permission === 'granted') {
