@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 
-const Navbar = ({ showSidebar, toggleSidebar }) => {
+const Navbar = ({ showSidebar }) => {
   const { authUser, logout } = useAuthUser();
   const location = useLocation();
 
@@ -18,32 +18,27 @@ const Navbar = ({ showSidebar, toggleSidebar }) => {
   return (
     <nav className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 flex items-center px-4 sm:px-6 lg:px-8">
       <div className="flex items-center w-full">
-        {/* Logo */}
+        {/* Logo - better handling for mobile and larger screens */}
         <Link
           to="/"
-          className={`flex items-center gap-2.5 ${
-            isChatPage ? "" : "lg:hidden"
-          }`}
-          style={{
-            minWidth: "120px",    // Prevent shrinking too much on small screens
-            paddingLeft: "0.5rem", // add some left padding
-          }}
+          className="flex items-center gap-2 max-w-[140px] sm:max-w-none"
         >
           <img
             src="/logo.png"
             alt="Logo"
-            className="h-8 w-auto max-w-full object-contain"
-            style={{ maxHeight: "40px" }}
+            className="h-8 w-auto object-contain max-h-8"
           />
         </Link>
 
         {/* Spacer */}
         <div className="flex-1"></div>
 
+        {/* Search */}
         <Link to="/search" className="btn btn-ghost btn-circle ml-3 inline-flex">
           <SearchIcon className="h-6 w-6 text-base-content opacity-70" />
         </Link>
 
+        {/* Show "Home" button only on Chat Page */}
         {isChatPage && (
           <Link
             to="/"
@@ -54,6 +49,7 @@ const Navbar = ({ showSidebar, toggleSidebar }) => {
           </Link>
         )}
 
+        {/* Friends button only outside chat */}
         {!isChatPage && (
           <div className="flex gap-4 lg:hidden">
             <Link
@@ -68,6 +64,7 @@ const Navbar = ({ showSidebar, toggleSidebar }) => {
           </div>
         )}
 
+        {/* Notifications (desktop only) */}
         <Link
           to="/notifications"
           className="btn btn-ghost btn-circle ml-3 hidden lg:inline-flex"
@@ -75,14 +72,17 @@ const Navbar = ({ showSidebar, toggleSidebar }) => {
           <BellIcon className="h-6 w-6 text-base-content opacity-70" />
         </Link>
 
+        {/* Theme toggle */}
         <ThemeSelector />
 
+        {/* Avatar */}
         <div className="avatar ml-3">
           <div className="w-9 rounded-full">
             <img src={authUser?.profilePic} alt="User Avatar" rel="noreferrer" />
           </div>
         </div>
 
+        {/* Logout */}
         <button
           className="btn btn-ghost btn-circle ml-3"
           onClick={logout}
