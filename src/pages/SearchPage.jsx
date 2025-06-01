@@ -11,7 +11,11 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { mutate: sendRequestMutation, isPending } = sendFriendRequest();
+ const { mutate: sendRequestMutation, isPending } = useMutation({
+  mutationFn: sendFriendRequest,
+  onSuccess: () => queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] }),
+});
+
 
   const handleSearch = async () => {
     if (searchQuery.trim() === "") {
