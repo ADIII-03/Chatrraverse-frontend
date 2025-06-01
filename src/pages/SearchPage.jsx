@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { getOutgoingFriendReqs, getRecommendedUsers, searchUsers } from "../lib/api";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  getOutgoingFriendReqs,
+  getRecommendedUsers,
+  searchUsers,
+} from "../lib/api";
 import { useSendFriendRequest } from "../hooks/useSendFriendRequest";
 import { CheckCircleIcon, MapPinIcon, UserPlusIcon } from "lucide-react";
-import { capitialize } from "../lib/utils";
+import { capitalize } from "../lib/utils";
 import { getLanguageFlag } from "../lib/languageFlag.jsx";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import useAuthUser from "../hooks/useAuthUser";
 
 const SearchPage = () => {
@@ -14,7 +18,6 @@ const SearchPage = () => {
   const [error, setError] = useState(null);
 
   const { mutate: sendRequestMutation, isPending } = useSendFriendRequest();
-  const queryClient = useQueryClient();
   const { authUser } = useAuthUser();
 
   const { data: recommendedUsersData, isLoading: loadingUsers } = useQuery({
@@ -31,18 +34,12 @@ const SearchPage = () => {
     queryFn: getOutgoingFriendReqs,
   });
 
-  const [outgoingRequestsIds, setOutgoingRequestsIds] = useState(new Set());
-
-  useEffect(() => {
-    const outgoingIds = new Set();
-    if (outgoingFriendReqs && outgoingFriendReqs.length > 0) {
-      outgoingFriendReqs.forEach((req) => {
-        if (req.recipient) {
-          outgoingIds.add(req.recipient._id);
-        }
-      });
-    }
-    setOutgoingRequestsIds(outgoingIds);
+  const outgoingRequestsIds = useMemo(() => {
+    const ids = new Set();
+    outgoingFriendReqs?.forEach((req) => {
+      if (req.recipient) ids.add(req.recipient._id);
+    });
+    return ids;
   }, [outgoingFriendReqs]);
 
   const handleSearch = async () => {
@@ -66,7 +63,17 @@ const SearchPage = () => {
     }
   };
 
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (searchQuery.trim()) {
+        handleSearch();
+      } else {
+        setSearchResults([]);
+      }
+    }, 400);
 
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -80,18 +87,11 @@ const SearchPage = () => {
             className="input input-bordered w-full max-w-xs mr-2"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch();
-            }}
           />
-          <button className="btn btn-primary" onClick={handleSearch}>
-            Search
-          </button>
         </div>
 
         {loading && <p>Loading...</p>}
         {error && <p className="text-red-500">{error}</p>}
-
         {!loading && !error && searchQuery.trim() !== "" && searchResults.length === 0 && (
           <p>No users found.</p>
         )}
@@ -100,7 +100,7 @@ const SearchPage = () => {
           {searchResults.map((user) => {
             const hasRequestBeenSent = outgoingRequestsIds.has(user._id);
             const alreadyRequestedYou = user?.outgoingFriendRequests?.some(
-              (req) => req.sender?._id === user._id
+              (req) => req.recipient?._id === authUser._id
             );
 
             return (
@@ -113,7 +113,6 @@ const SearchPage = () => {
                     <div className="avatar size-16 rounded-full">
                       <img src={user?.profilePic} alt={user?.fullName} />
                     </div>
-
                     <div>
                       <h3 className="font-semibold text-lg">{user.fullName}</h3>
                       {user.location && (
@@ -128,11 +127,11 @@ const SearchPage = () => {
                   <div className="flex flex-wrap gap-1.5">
                     <span className="badge badge-secondary">
                       {getLanguageFlag(user.nativeLanguage)}
-                      Native: {capitialize(user.nativeLanguage)}
+                      Native: {capitalize(user.nativeLanguage)}
                     </span>
                     <span className="badge badge-outline">
                       {getLanguageFlag(user.learningLanguage)}
-                      Learning: {capitialize(user.learningLanguage)}
+                      Learning: {capitalize(user.learningLanguage)}
                     </span>
                   </div>
 
@@ -140,12 +139,17 @@ const SearchPage = () => {
 
                   <button
                     className={`btn w-full mt-2 ${
-                      hasRequestBeenSent ? "btn-disabled" : "btn-primary"
+                      hasRequestBeenSent || alreadyRequestedYou ? "btn-disabled" : "btn-primary"
                     }`}
                     onClick={() => sendRequestMutation(user._id)}
                     disabled={hasRequestBeenSent || alreadyRequestedYou || isPending}
                   >
-                    {hasRequestBeenSent ? (
+                    {alreadyRequestedYou ? (
+                      <>
+                        <CheckCircleIcon className="size-4 mr-2" />
+                        Requested You
+                      </>
+                    ) : hasRequestBeenSent ? (
                       <>
                         <CheckCircleIcon className="size-4 mr-2" />
                         Request Sent
@@ -168,7 +172,9 @@ const SearchPage = () => {
           <div className="mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Meet New Learners</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                  Meet New Learners
+                </h2>
                 <p className="opacity-70">
                   Discover perfect language exchange partners based on your profile
                 </p>
@@ -192,7 +198,7 @@ const SearchPage = () => {
               {recommendedUsers.map((user) => {
                 const hasRequestBeenSent = outgoingRequestsIds.has(user._id);
                 const alreadyRequestedYou = user?.outgoingFriendRequests?.some(
-                  (req) => req.sender?._id === user._id
+                  (req) => req.recipient?._id === authUser._id
                 );
 
                 return (
@@ -205,7 +211,6 @@ const SearchPage = () => {
                         <div className="avatar size-16 rounded-full">
                           <img src={user?.profilePic} alt={user?.fullName} />
                         </div>
-
                         <div>
                           <h3 className="font-semibold text-lg">{user?.fullName}</h3>
                           {user.location && (
@@ -220,23 +225,29 @@ const SearchPage = () => {
                       <div className="flex flex-wrap gap-1.5">
                         <span className="badge badge-secondary">
                           {getLanguageFlag(user.nativeLanguage)}
-                          Native: {capitialize(user.nativeLanguage)}
+                          Native: {capitalize(user.nativeLanguage)}
                         </span>
                         <span className="badge badge-outline">
                           {getLanguageFlag(user.learningLanguage)}
-                          Learning: {capitialize(user.learningLanguage)}
+                          Learning: {capitalize(user.learningLanguage)}
                         </span>
                       </div>
 
                       {user.bio && <p className="text-sm opacity-70">{user.bio}</p>}
 
-                      {/* Action button */}
                       <button
-                        className={`btn w-full mt-2 ${hasRequestBeenSent ? "btn-disabled" : "btn-primary"}`}
+                        className={`btn w-full mt-2 ${
+                          hasRequestBeenSent || alreadyRequestedYou ? "btn-disabled" : "btn-primary"
+                        }`}
                         onClick={() => sendRequestMutation(user._id)}
                         disabled={hasRequestBeenSent || alreadyRequestedYou || isPending}
                       >
-                        {hasRequestBeenSent ? (
+                        {alreadyRequestedYou ? (
+                          <>
+                            <CheckCircleIcon className="size-4 mr-2" />
+                            Requested You
+                          </>
+                        ) : hasRequestBeenSent ? (
                           <>
                             <CheckCircleIcon className="size-4 mr-2" />
                             Request Sent
