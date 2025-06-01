@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
 import { useQuery } from "@tanstack/react-query";
 import { getStreamToken } from "../lib/api";
+import {streamClient} from "../lib/streamClient";
 
 import {
   Channel,
@@ -23,9 +24,6 @@ import ChannelList from "../components/ChannelList";
 import 'stream-chat-react/dist/css/v2/index.css';
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
-
-// Initialize StreamChat client outside the component to ensure it's a singleton
-const chatClientInstance = StreamChat.getInstance(STREAM_API_KEY);
 
 const ChatPage = () => {
   const { id: targetUserId } = useParams();
