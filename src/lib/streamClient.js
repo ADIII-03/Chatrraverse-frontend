@@ -6,6 +6,7 @@ class StreamClientSingleton {
   constructor() {
     this.client = null;
     this.currentUserId = null;
+    this.connecting = false;
   }
 
   async getClient() {
@@ -16,17 +17,31 @@ class StreamClientSingleton {
   }
 
   async connectUser(userData, token) {
-    const client = await this.getClient();
-    
-    // Only connect if not already connected or if connecting as a different user
-    if (!client.userID || client.userID !== userData.id) {
-      if (client.userID) {
-        await client.disconnectUser();
-      }
-      await client.connectUser(userData, token);
-      this.currentUserId = userData.id;
+    if (!userData || !userData.id || !token) {
+      throw new Error("User data or token is missing in connectUser()");
     }
-    
+
+    const client = await this.getClient();
+
+    if (this.connecting) return client;
+    this.connecting = true;
+
+    try {
+      if (
+        !client.userID ||
+        client.userID !== userData.id ||
+        !client.wsConnection?.isHealthy
+      ) {
+        if (client.userID) {
+          await client.disconnectUser();
+        }
+        await client.connectUser(userData, token);
+        this.currentUserId = userData.id;
+      }
+    } finally {
+      this.connecting = false;
+    }
+
     return client;
   }
 
@@ -34,6 +49,7 @@ class StreamClientSingleton {
     if (this.client && this.client.userID) {
       await this.client.disconnectUser();
       this.currentUserId = null;
+      this.client = null;
     }
   }
 
