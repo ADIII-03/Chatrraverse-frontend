@@ -66,12 +66,7 @@ const SearchPage = () => {
     }
   };
 
-  // IDs of users who already got friend requests
-  const outgoingRequestsIds = new Set(
-    searchResults
-      .filter((user) => user?.incomingFriendRequests?.length > 0)
-      .map((user) => user._id)
-  );
+
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
