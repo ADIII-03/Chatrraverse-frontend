@@ -122,16 +122,20 @@ const ChatPage = () => {
   if (loading || !chatClient) return <ChatLoader />;
 
   return (
-    <div className="p-4 min-h-screen bg-base-200 text-base-content" data-theme="mytheme">
+    <div className="p-2 md:p-4 min-h-screen bg-base-200 text-base-content" data-theme="mytheme">
+
       <div className="max-w-7xl mx-auto">
-        <div className="rounded-xl shadow-xl bg-base-100 h-[85vh] flex overflow-hidden">
+     <div className="rounded-xl shadow-xl bg-base-100 h-[85vh] md:h-[85vh] h-full flex flex-col md:flex-row overflow-hidden">
+
           <Chat client={chatClient}>
             <div className="flex h-full w-full">
-              <div className="w-80 border-r border-base-300">
+             <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-base-300">
+
                 <ChannelList client={chatClient} />
               </div>
               {channel ? (
-                <div className="flex-1">
+              <div className="w-full md:flex-1">
+
                   <Channel channel={channel}>
                     <div className="relative flex flex-col h-full">
                       <div className="absolute top-2 right-2 z-10">
