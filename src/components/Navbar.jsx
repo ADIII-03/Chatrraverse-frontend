@@ -6,11 +6,10 @@ import {
   HomeIcon,
   UsersIcon,
   SearchIcon,
-  Menu as MenuIcon,
 } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 
-const Navbar = ({ showSidebar  }) => {
+const Navbar = ({ showSidebar }) => {
   const { authUser, logout } = useAuthUser();
   const location = useLocation();
 
@@ -22,21 +21,24 @@ const Navbar = ({ showSidebar  }) => {
         {/* Logo */}
         <Link
           to="/"
-          className={flex items-center gap-2.5 ${isChatPage ? "" : "lg:hidden"}}
+          className={`flex items-center gap-2.5 ${isChatPage ? "" : "lg:hidden"}`}
         >
-          <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="h-8 w-auto object-contain max-h-8"
+          />
         </Link>
-
-        {/* Hamburger button - shown on mobile when sidebar exists */}
-     
 
         {/* Spacer */}
         <div className="flex-1"></div>
 
+        {/* Search icon */}
         <Link to="/search" className="btn btn-ghost btn-circle ml-3 inline-flex">
           <SearchIcon className="h-6 w-6 text-base-content opacity-70" />
         </Link>
 
+        {/* Home on chat page */}
         {isChatPage && (
           <Link to="/" className="flex items-center gap-1 btn btn-ghost btn-sm mr-4">
             <HomeIcon className="h-5 w-5" />
@@ -44,13 +46,14 @@ const Navbar = ({ showSidebar  }) => {
           </Link>
         )}
 
+        {/* Friends on non-chat pages */}
         {!isChatPage && (
           <div className="flex gap-4 lg:hidden">
             <Link
               to="/friends"
-              className={flex items-center gap-1 btn btn-ghost btn-sm ${
+              className={`flex items-center gap-1 btn btn-ghost btn-sm ${
                 location.pathname === "/friends" ? "btn-active" : ""
-              }}
+              }`}
             >
               <UsersIcon className="h-5 w-5" />
               Friends
@@ -58,6 +61,7 @@ const Navbar = ({ showSidebar  }) => {
           </div>
         )}
 
+        {/* Notifications (desktop only) */}
         <Link
           to="/notifications"
           className="btn btn-ghost btn-circle ml-3 hidden lg:inline-flex"
