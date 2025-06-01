@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { searchUsers } from "../lib/api";
-import { useSendFriendRequest } from "../hooks/useSendFriendRequest";
+import { useSendFriendRequest } from "../lib/api";
 import { CheckCircleIcon, MapPinIcon, UserPlusIcon } from "lucide-react";
 import { capitialize } from "../lib/utils";
 import { getLanguageFlag } from "../lib/languageFlag.jsx";
