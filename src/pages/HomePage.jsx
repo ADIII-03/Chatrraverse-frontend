@@ -66,8 +66,10 @@ const HomePage = () => {
     const outgoingIds = new Set();
     if (outgoingFriendReqs && outgoingFriendReqs.length > 0) {
       outgoingFriendReqs.forEach((req) => {
-        outgoingIds.add(req.recipient._id);
-      });
+         if (req.recipient) {
+            outgoingIds.add(req.recipient._id);
+          }
+        });
     }
     setOutgoingRequestsIds(outgoingIds);
   }, [outgoingFriendReqs]);
