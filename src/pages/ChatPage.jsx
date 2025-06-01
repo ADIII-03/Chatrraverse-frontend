@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
 import { useQuery } from "@tanstack/react-query";
@@ -19,7 +19,6 @@ import toast from "react-hot-toast";
 import ChatLoader from "../components/ChatLoader";
 import CallButton from "../components/CallButton";
 import ChannelList from "../components/ChannelList";
-// import Navbar from "../components/Navbar"; // import here
 
 import 'stream-chat-react/dist/css/v2/index.css';
 
@@ -29,6 +28,7 @@ const ChatPage = () => {
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const channelCache = useRef(new Map());
 
   const { authUser } = useAuthUser();
 
@@ -71,20 +71,34 @@ const ChatPage = () => {
         client.off('message.new', handleNewMessage);
         client.on('message.new', handleNewMessage);
 
+        setChatClient(client);
+
         if (targetUserId) {
           const channelId = [authUser._id, targetUserId].sort().join("-");
-          let currChannel = client.channel("messaging", channelId, {
-            members: [authUser._id, targetUserId],
-          });
+          let currChannel = channelCache.current.get(channelId);
 
-          if (!currChannel.initialized) {
-            await currChannel.watch();
+          if (!currChannel) {
+            currChannel = client.channel("messaging", channelId, {
+              members: [authUser._id, targetUserId],
+            });
+
+            try {
+              await currChannel.query(); // More efficient than .watch()
+              channelCache.current.set(channelId, currChannel);
+            } catch (err) {
+              if (err.response?.status === 429) {
+                toast.error("Too many requests. Please try again shortly.");
+              } else {
+                toast.error("Failed to load the chat channel.");
+                console.error("Channel query error:", err);
+              }
+              return;
+            }
           }
 
           setChannel(currChannel);
         }
 
-        setChatClient(client);
       } catch (error) {
         console.error("Chat init error:", error);
         toast.error("Chat initialization failed.");
@@ -96,7 +110,9 @@ const ChatPage = () => {
     initChat();
 
     return () => {
-      chatClient?.off('message.new', handleNewMessage);
+      if (chatClient) {
+        chatClient.off('message.new', handleNewMessage);
+      }
     };
   }, [tokenData, authUser, targetUserId, handleNewMessage]);
 
@@ -115,17 +131,12 @@ const ChatPage = () => {
   return (
     <div className="p-4 min-h-screen bg-base-200 text-base-content" data-theme="mytheme">
       <div className="max-w-7xl mx-auto">
-        {/* Pass toggleMenu and isMenuOpen to Navbar */}
-        {/* <Navbar toggleMenu={() => setIsMenuOpen((prev) => !prev)} /> */}
-
         <div className="rounded-xl shadow-xl bg-base-100 h-[85vh] flex overflow-hidden relative">
           <Chat client={chatClient}>
-            {/* Sidebar */}
             <div className={`fixed inset-y-0 left-0 z-10 bg-base-100 w-72 border-r border-base-300 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:flex ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:w-80`}>
               <ChannelList client={chatClient} onSelectChannel={() => setIsMenuOpen(false)} />
             </div>
 
-            {/* Chat window */}
             <div className="flex-1">
               {channel ? (
                 <Channel channel={channel}>
