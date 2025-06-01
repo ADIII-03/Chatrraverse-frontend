@@ -111,7 +111,7 @@ const SearchPage = () => {
                 <div className="card-body p-5 space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="avatar size-16 rounded-full">
-                      <img src={user.profilePic} alt={user.fullName} />
+                      <img src={user?.profilePic} alt={user?.fullName} />
                     </div>
 
                     <div>
@@ -203,11 +203,11 @@ const SearchPage = () => {
                     <div className="card-body p-5 space-y-4">
                       <div className="flex items-center gap-3">
                         <div className="avatar size-16 rounded-full">
-                          <img src={user.profilePic} alt={user.fullName} />
+                          <img src={user?.profilePic} alt={user?.fullName} />
                         </div>
 
                         <div>
-                          <h3 className="font-semibold text-lg">{user.fullName}</h3>
+                          <h3 className="font-semibold text-lg">{user?.fullName}</h3>
                           {user.location && (
                             <div className="flex items-center text-xs opacity-70 mt-1">
                               <MapPinIcon className="size-3 mr-1" />
@@ -217,7 +217,6 @@ const SearchPage = () => {
                         </div>
                       </div>
 
-                      {/* Languages with flags */}
                       <div className="flex flex-wrap gap-1.5">
                         <span className="badge badge-secondary">
                           {getLanguageFlag(user.nativeLanguage)}
