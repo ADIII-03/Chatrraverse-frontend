@@ -19,16 +19,13 @@ const Navbar = ({ showSidebar }) => {
     <nav className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 flex items-center px-4 sm:px-6 lg:px-8">
       <div className="flex items-center w-full">
         {/* Logo */}
-        <Link
-          to="/"
-          className={`flex items-center gap-2.5 ${isChatPage ? "" : "lg:hidden"}`}
-        >
-          <img
-            src="/logo.png"
-            alt="Logo"
-            className="h-8 w-auto object-contain max-h-8"
-          />
-        </Link>
+     <Link
+  to="/"
+  className={`flex items-center gap-2.5 ${isChatPage ? "shrink-0" : "lg:hidden"}`}
+>
+  <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
+</Link>
+
 
         {/* Spacer */}
         <div className="flex-1"></div>
