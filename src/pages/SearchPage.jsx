@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { searchUsers } from "../lib/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query"; 
 import { sendFriendRequest } from "../lib/api";
 import { CheckCircleIcon, MapPinIcon, UserPlusIcon } from "lucide-react";
 import { capitialize } from "../lib/utils";
