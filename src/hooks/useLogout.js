@@ -19,13 +19,13 @@ const useLogout = () => {
       // Then clear localStorage/sessionStorage or cookies if needed
       localStorage.removeItem("token");
       sessionStorage.clear();
-      console.log("Logout successful, navigating to login."); // Add console log
+      // console.log("Logout successful, navigating to login."); // Add console log
       navigate("/login", { replace: true });
     },
   });
 
   const performLogout = () => {
-    console.log("Logout function called."); // Add console log
+    // console.log("Logout function called."); // Add console log
     logoutMutation();
   };
 

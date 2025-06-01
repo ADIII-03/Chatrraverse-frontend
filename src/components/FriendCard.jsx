@@ -130,13 +130,12 @@ const FriendCard = ({ friend, authUser }) => {
           </div>
           <div className="flex-1">
             <h3 className="font-semibold truncate">{friend.fullName}</h3>
-            {lastMessage && (
-              <p className="text-sm opacity-70 truncate whitespace-normal break-words">
-                {lastMessage.text.length > 50
-                  ? `${lastMessage.text.substring(0, 50)}...`
-                  : lastMessage.text}
-              </p>
-            )}
+          {lastMessage?.text && (
+  <p>
+    {lastMessage.text.length > 50 ? `${lastMessage.text.slice(0, 50)}...` : lastMessage.text}
+  </p>
+)}
+
           </div>
           {unreadCount > 0 && (
             <div className="badge badge-primary badge-sm">{unreadCount}</div>

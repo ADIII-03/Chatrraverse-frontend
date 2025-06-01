@@ -60,10 +60,10 @@ const ChatPage = () => {
   }, [authUser, notificationSound]);
 
   useEffect(() => {
-    // Request notification permissions
-    if ('Notification' in window) {
-      Notification.requestPermission();
-    }
+   if ('Notification' in window && Notification.permission !== 'granted') {
+  Notification.requestPermission().catch(console.error);
+}
+
   }, []);
 
   useEffect(() => {
@@ -115,11 +115,10 @@ const ChatPage = () => {
     // Cleanup function
     return () => {
       if (chatClient && chatClient.disconnectUser) {
-        chatClient.off('message.new', handleNewMessage);
-        // Only disconnect if the client is still connected and it's the last reference
-        if (chatClient.userID) {
-          chatClient.disconnectUser();
-        }
+       return () => {
+  chatClient?.off('message.new', handleNewMessage);
+};
+
       }
     };
   }, [tokenData, authUser, targetUserId, handleNewMessage, chatClient]);

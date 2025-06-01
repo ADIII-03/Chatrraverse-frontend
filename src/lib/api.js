@@ -2,7 +2,7 @@ import { axiosInstance } from "./axios.js";
 
 export const getAuthUser = async () => {
   const res = await axiosInstance.get("auth/me");
-  console.log("getAuthUser response", res);
+  // console.log("getAuthUser response", res);
   return { user: res.data.user };
 
 };
@@ -12,6 +12,7 @@ export const login = async (userData) => {
   // console.log("login response", response);
   return response.data ;
 };
+
 
 
 export const completeOnboarding = async (userData) => {

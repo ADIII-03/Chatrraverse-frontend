@@ -33,7 +33,7 @@ const Navbar = () => {
         {/* Search Icon */}
         <Link
           to="/search"
-          className="btn btn-ghost btn-circle ml-3 hidden lg:inline-flex"
+          className="btn btn-ghost btn-circle ml-3 inline-flex"
         >
           <SearchIcon className="h-6 w-6 text-base-content opacity-70" />
         </Link>
