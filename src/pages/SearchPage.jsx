@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { searchUsers } from "../lib/api";
-import { useSendFriendRequest } from "../lib/api";
+import { sendFriendRequest } from "../lib/api";
 import { CheckCircleIcon, MapPinIcon, UserPlusIcon } from "lucide-react";
 import { capitialize } from "../lib/utils";
 import { getLanguageFlag } from "../lib/languageFlag.jsx";
@@ -11,7 +11,7 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { mutate: sendRequestMutation, isPending } = useSendFriendRequest();
+  const { mutate: sendRequestMutation, isPending } = sendFriendRequest();
 
   const handleSearch = async () => {
     if (searchQuery.trim() === "") {
