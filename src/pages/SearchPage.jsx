@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
 import { searchUsers } from '../lib/api';
-import FriendCard from '../components/FriendCard';
+import RecommendedUserCard from '../components/RecommendedUserCard';
+import { useSendFriendRequest } from '../hooks/useSendFriendRequest'; // Adjust import path if needed
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Friend request mutation hook
+  const { mutate: sendRequestMutation, isPending } = useSendFriendRequest();
+
+  // Set of IDs of users to whom requests have already been sent
+  const outgoingRequestsIds = new Set(
+    searchResults
+      .filter((user) => user?.incomingFriendRequests?.length > 0)
+      .map((user) => user._id)
+  );
 
   const handleSearch = async () => {
     if (searchQuery.trim() === '') {
@@ -37,7 +48,7 @@ const SearchPage = () => {
           className="input input-bordered w-full max-w-xs mr-2"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={(e) => {
+          onKeyDown={(e) => {
             if (e.key === 'Enter') {
               handleSearch();
             }
@@ -53,9 +64,23 @@ const SearchPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {searchResults.length > 0 ? (
-          searchResults.map((user) => (
-            <FriendCard key={user._id} friend={user} />
-          ))
+          searchResults.map((user) => {
+            const hasRequestBeenSent = outgoingRequestsIds.has(user._id);
+            const alreadyRequestedYou = user?.outgoingFriendRequests?.some(
+              (req) => req.sender?._id === user._id
+            );
+
+            return (
+              <RecommendedUserCard
+                key={user._id}
+                user={user}
+                hasRequestBeenSent={hasRequestBeenSent}
+                alreadyRequestedYou={alreadyRequestedYou}
+                onSendRequest={sendRequestMutation}
+                isPending={isPending}
+              />
+            );
+          })
         ) : (
           !loading && !error && searchQuery.trim() !== '' && <p>No users found.</p>
         )}
