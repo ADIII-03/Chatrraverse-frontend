@@ -4,7 +4,7 @@ import {
   getRecommendedUsers,
   searchUsers,
 } from "../lib/api";
-import { useSendFriendRequest } from "../hooks/useSendFriendRequest";
+import { useSendFriendRequest } from "../hooks/useSendFriendRequest.js";
 import {
   CheckCircleIcon,
   MapPinIcon,
