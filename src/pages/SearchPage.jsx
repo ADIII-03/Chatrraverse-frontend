@@ -6,7 +6,7 @@ import {
 } from "../lib/api";
 import { useSendFriendRequest } from "../hooks/useSendFriendRequest";
 import { CheckCircleIcon, MapPinIcon, UserPlusIcon } from "lucide-react";
-import { capitalize } from "../lib/utils";
+import { capitialize } from "../lib/utils";
 import { getLanguageFlag } from "../lib/languageFlag.jsx";
 import { useQuery } from "@tanstack/react-query";
 import useAuthUser from "../hooks/useAuthUser";
@@ -127,11 +127,11 @@ const SearchPage = () => {
                   <div className="flex flex-wrap gap-1.5">
                     <span className="badge badge-secondary">
                       {getLanguageFlag(user.nativeLanguage)}
-                      Native: {capitalize(user.nativeLanguage)}
+                      Native: {capitialize(user.nativeLanguage)}
                     </span>
                     <span className="badge badge-outline">
                       {getLanguageFlag(user.learningLanguage)}
-                      Learning: {capitalize(user.learningLanguage)}
+                      Learning: {capitialize(user.learningLanguage)}
                     </span>
                   </div>
 
