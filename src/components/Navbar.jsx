@@ -6,7 +6,6 @@ import {
   HomeIcon,
   UsersIcon,
   SearchIcon,
-  Menu as MenuIcon,
 } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 
@@ -22,21 +21,21 @@ const Navbar = ({ showSidebar, toggleSidebar }) => {
         {/* Logo */}
         <Link
           to="/"
-          className={`flex items-center gap-2.5 ${isChatPage ? "" : "lg:hidden"}`}
+          className={`flex items-center gap-2.5 ${
+            isChatPage ? "" : "lg:hidden"
+          }`}
+          style={{
+            minWidth: "120px",    // Prevent shrinking too much on small screens
+            paddingLeft: "0.5rem", // add some left padding
+          }}
         >
-          <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="h-8 w-auto max-w-full object-contain"
+            style={{ maxHeight: "40px" }}
+          />
         </Link>
-
-        {/* Hamburger button - shown on mobile when sidebar exists */}
-        {showSidebar && (
-          <button
-            className="btn btn-ghost btn-circle ml-2 md:hidden"
-            onClick={toggleSidebar}
-            aria-label="Toggle sidebar"
-          >
-            <MenuIcon className="h-6 w-6" />
-          </button>
-        )}
 
         {/* Spacer */}
         <div className="flex-1"></div>
@@ -46,7 +45,10 @@ const Navbar = ({ showSidebar, toggleSidebar }) => {
         </Link>
 
         {isChatPage && (
-          <Link to="/" className="flex items-center gap-1 btn btn-ghost btn-sm mr-4">
+          <Link
+            to="/"
+            className="flex items-center gap-1 btn btn-ghost btn-sm mr-4"
+          >
             <HomeIcon className="h-5 w-5" />
             Home
           </Link>
@@ -81,7 +83,11 @@ const Navbar = ({ showSidebar, toggleSidebar }) => {
           </div>
         </div>
 
-        <button className="btn btn-ghost btn-circle ml-3" onClick={logout} aria-label="Logout">
+        <button
+          className="btn btn-ghost btn-circle ml-3"
+          onClick={logout}
+          aria-label="Logout"
+        >
           <LogOutIcon className="h-6 w-6 text-base-content opacity-70" />
         </button>
       </div>
